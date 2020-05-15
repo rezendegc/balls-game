@@ -1,0 +1,1 @@
+const double SCREEN_WIDTH = 32;
