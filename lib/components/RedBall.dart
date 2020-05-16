@@ -77,9 +77,10 @@ class RedBall extends Component {
 
     final computedParticle = ComputedParticle(
       renderer: (canvas, particle) {
+        print(particle.progress);
         return canvas.drawRect(
           Rect.fromCenter(center: Offset.zero, width: .4, height: .4),
-          Paint()..color = Colors.red.withOpacity((1 - particle.progress).abs()),
+          Paint()..color = Colors.red,
         );
       }
     );

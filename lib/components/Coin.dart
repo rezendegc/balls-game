@@ -77,7 +77,7 @@ class Coin extends Component {
       renderer: (canvas, particle) {
         return canvas.drawRect(
           Rect.fromCenter(center: Offset.zero, width: .4, height: .4),
-          Paint()..color = Colors.yellowAccent.withOpacity((1 - particle.progress).abs()),
+          Paint()..color = Colors.yellowAccent,
         );
       }
     );
