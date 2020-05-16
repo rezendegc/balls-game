@@ -90,11 +90,11 @@ class Player extends Component with ContactListener {
   }
 
   void update(double dt) {
-    // if (!drawLine) {
-    //   currentHealth -= dt * 3;
-    // } else {
-    //   currentHealth -= dt * 50;
-    // }
+    if (!drawLine) {
+      currentHealth -= dt * 3;
+    } else {
+      currentHealth -= dt * 50;
+    }
     if (currentHealth < 0) { // loses
       currentHealth = 0;
       game.loseGame();

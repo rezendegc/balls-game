@@ -135,6 +135,7 @@ class MyGame extends BaseGame with PanDetector {
   void onPanUpdate(details) {
     if (!player.canJump) return;
 
+    player.drawLine = true;
     player.pointPosition = tapPositionToLocalPosition(details.globalPosition);
   }
 
