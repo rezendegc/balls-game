@@ -77,14 +77,14 @@ class Coin extends Component {
       renderer: (canvas, particle) {
         return canvas.drawRect(
           Rect.fromCenter(center: Offset.zero, width: .4, height: .4),
-          Paint()..color = Colors.yellowAccent,
+          Paint()..color = Colors.yellowAccent.withOpacity((1 - particle.progress).abs()),
         );
       }
     );
 
     final particle1 = Particle.generate(
       count: 20,
-      lifespan: 3,
+      lifespan: 2,
       generator: (i) => AcceleratedParticle(
         position: position,
         speed: Offset(-rnd.nextDouble() * 1.5, -rnd.nextDouble()) * 30,
@@ -94,7 +94,7 @@ class Coin extends Component {
     );
     final particle2 = Particle.generate(
       count: 20,
-      lifespan: 3,
+      lifespan: 2,
       generator: (i) => AcceleratedParticle(
         position: position,
         speed: Offset(-rnd.nextDouble() * 1.5, rnd.nextDouble()) * 30,
