@@ -11,7 +11,7 @@ const RESOURCES = {
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "115e937bb829a890521f72d2e664b632",
 "assets/AssetManifest.json": "2efbb41d7877d10aac9d091f58ccd7b9",
 "assets/fonts/MaterialIcons-Regular.ttf": "56d3ffdef7a25659eab6a68a3fbfaf16",
-"main.dart.js": "9ccd3c7ee350c18b67d04718344ac65b",
+"main.dart.js": "1e1d93db5fa3a35b08c28a75f556f942",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796"
 };
 
