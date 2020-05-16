@@ -15,7 +15,7 @@ class Floor extends Component {
   Rect rect;
 
   Floor(this.game, Offset offset) {
-    Vector2 position = Vector2(offset.dx, offset.dy + (16 * game.size.height / game.size.width));
+    Vector2 position = Vector2(offset.dx, offset.dy);
 
     PolygonShape shape = PolygonShape();
     shape.setAsBoxXY(16, 1.5);

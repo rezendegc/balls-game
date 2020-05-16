@@ -13,6 +13,7 @@ import 'package:webgame/components/RedBall.dart';
 import 'package:webgame/game.dart';
 
 const double SIZE = .5;
+const double MAX_SPEED = 64;
 
 class Player extends Component with ContactListener {
   final MyGame game;
@@ -68,12 +69,20 @@ class Player extends Component with ContactListener {
   }
 
   void render(Canvas c) {
+    double speed = body.linearVelocity.x.abs() + body.linearVelocity.y.abs();
+    speed = speed < MAX_SPEED ? speed : MAX_SPEED;
 
     c.save();
     c.translate(body.position.x, body.position.y);
     if (drawLine) {
-      linePaint.shader = ui.Gradient.linear(Offset(0,0), pointPosition, [Colors.white, Colors.white10]);
+      linePaint.shader = ui.Gradient.linear(Offset(0,0), pointPosition, [Colors.white, Colors.transparent]);
       c.drawLine(Offset.zero, pointPosition, linePaint);
+
+      c.rotate(atan2(pointPosition.dy, pointPosition.dx) + pi/2);
+      c.scale(1, .8);
+    } else if (speed > 1) {
+      c.rotate(atan2(body.linearVelocity.y, body.linearVelocity.x));
+      c.scale(1, 1 - (.3 * (speed / MAX_SPEED)));
     }
 
     c.drawCircle(Offset.zero, SIZE, paint);
@@ -81,11 +90,11 @@ class Player extends Component with ContactListener {
   }
 
   void update(double dt) {
-    if (!drawLine) {
-      currentHealth -= dt * 3;
-    } else {
-      currentHealth -= dt * 50;
-    }
+    // if (!drawLine) {
+    //   currentHealth -= dt * 3;
+    // } else {
+    //   currentHealth -= dt * 50;
+    // }
     if (currentHealth < 0) { // loses
       currentHealth = 0;
       game.loseGame();
