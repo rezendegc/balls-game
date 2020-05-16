@@ -136,7 +136,6 @@ class MyGame extends BaseGame with PanDetector {
     if (!player.canJump) return;
 
     player.pointPosition = tapPositionToLocalPosition(details.globalPosition);
-    print(player.pointPosition);
   }
 
   void onPanEnd(details) {
@@ -171,7 +170,6 @@ class MyGame extends BaseGame with PanDetector {
   }
 
   void _spawnEnemies() {
-    print((player.body.position.x).abs());
     if (lastLavaPosition < (player.body.position.x).abs() + 16) {
       lastLavaPosition += 16;
       add(Lava(this, Offset(lastLavaPosition + 16, 1.5)));
