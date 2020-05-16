@@ -146,7 +146,6 @@ class MyGame extends BaseGame with PanDetector {
   }
 
   void onPanCancel() {
-    if (!player.canJump) return;
     if (!player.drawLine) return;
 
     player.drawLine = false;
