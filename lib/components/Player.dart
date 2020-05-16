@@ -81,11 +81,11 @@ class Player extends Component with ContactListener {
   }
 
   void update(double dt) {
-    if (!drawLine) {
-      currentHealth -= dt * 3;
-    } else {
-      currentHealth -= dt * 50;
-    }
+    // if (!drawLine) {
+    //   currentHealth -= dt * 3;
+    // } else {
+    //   currentHealth -= dt * 50;
+    // }
     if (currentHealth < 0) { // loses
       currentHealth = 0;
       game.loseGame();
@@ -111,9 +111,9 @@ class Player extends Component with ContactListener {
     double deacelleration = rnd.nextDouble() + .3;
     deacelleration = deacelleration > .7 ? .7 : deacelleration;
 
-    final force = Vector2(-8 + .15 * body.linearVelocity.x, 0);
-    body.linearVelocity.x = 0; // deaccelerate body before apply force
-    body.linearVelocity.y *= deacelleration; // deaccelerate body before apply force
+    final force = Vector2(0, -8 + .15 * body.linearVelocity.y);
+    body.linearVelocity.y = 0; // deaccelerate body before apply force
+    body.linearVelocity.x *= deacelleration; // deaccelerate body before apply force
     body.applyLinearImpulse(force, Vector2(body.position.x, body.position.y), true);
   }
 

@@ -26,7 +26,7 @@ class MyGame extends BaseGame with PanDetector {
 
   MyGame(this.navigate) : super() {
     world = World.withPool(
-      Vector2(10, 0),
+      Vector2(0, 10),
       DefaultWorldPool(100, 10),
     );
 
@@ -37,14 +37,14 @@ class MyGame extends BaseGame with PanDetector {
     resize(await Flame.util.initialDimensions());
 
     add(Floor(this, Offset(0, 0)));
-    add(Lava(this, Offset(1.5, 0)));
+    add(Lava(this, Offset(0, 1.5)));
     add(player = Player(this, Offset(0,0)));
     add(Health(this));
 
-    add(RedBall(this, Offset(2, 2)));
-    add(Coin(this, Offset(2, -2)));
-    add(PurpleBall(this, Offset(2, -6)));
-    add(HealthBall(this, Offset(2, 6)));
+    add(RedBall(this, Offset(-2, 2)));
+    add(Coin(this, Offset(2, 2)));
+    add(PurpleBall(this, Offset(6, 2)));
+    add(HealthBall(this, Offset(-6, 2)));
     add(ScoreDisplay(this));
   }
 
@@ -56,7 +56,7 @@ class MyGame extends BaseGame with PanDetector {
 
     c.save();
     c.translate(size.width / 2, size.height / 2);
-    c.scale(size.height / SCREEN_WIDTH);
+    c.scale(size.width / SCREEN_WIDTH);
     super.render(c);
 
     c.restore();
@@ -66,7 +66,7 @@ class MyGame extends BaseGame with PanDetector {
   void update(double dt) {
     if (size == null || pause) return;
 
-    double slowedDt = player.drawLine ? dt / 4 : dt;
+    double slowedDt = player?.drawLine == true ? dt / 4 : dt;
 
     world.stepDt(slowedDt, 100, 100);
 
@@ -82,8 +82,8 @@ class MyGame extends BaseGame with PanDetector {
   }
 
   void _cameraFollowPlayer() {
-    camera.x = player.body.position.x;
-    camera.y = player.body.position.y;
+    camera.x = player?.body?.position?.x ?? 0;
+    camera.y = player?.body?.position?.y ?? 0;
   }
 
   void onPanStart(details) {
@@ -114,7 +114,7 @@ class MyGame extends BaseGame with PanDetector {
   }
 
   Offset tapPositionToLocalPosition(Offset position) {
-    return (position - Offset(size.width / 2, size.height / 2)) / (size.height / SCREEN_WIDTH);
+    return (position - Offset(size.width / 2, size.height / 2)) / (size.width / SCREEN_WIDTH);
   }
 
   void loseGame() {

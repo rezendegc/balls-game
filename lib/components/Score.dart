@@ -59,7 +59,7 @@ class ScoreDisplay extends Component {
   void render(Canvas canvas) {
     canvas.save();
 
-    canvas.rotate(-pi / 2);
+    // canvas.rotate(-pi / 2);
 
     if (painter.text?.toPlainText() != null)
       painter.paint(canvas, position);
@@ -84,7 +84,7 @@ class ScoreDisplay extends Component {
 
       position = Offset(
         -painter.width / 2,
-        - (15 * game.size.width / game.size.height),
+        - (15 * game.size.height / game.size.width),
       );
     }
 

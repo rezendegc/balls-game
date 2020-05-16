@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:webgame/game.dart';
 
-const HEALTH_HEIGHT = 6.0;
-const HEALTH_WIDTH = 1.0;
+const HEALTH_HEIGHT = 1.0;
+const HEALTH_WIDTH = 8.0;
 
 class Health extends Component {
   Rect currentHealthRect;
@@ -17,14 +17,14 @@ class Health extends Component {
 
   Health(this.game) {
     maxHealthRect = Rect.fromLTWH(
-      -HEALTH_WIDTH / 2 - (12 * game.size.width / game.size.height),
-      -HEALTH_HEIGHT / 2,
+      -HEALTH_WIDTH / 2,
+      -HEALTH_HEIGHT / 2 - (12 * game.size.height / game.size.width),
       HEALTH_WIDTH,
       HEALTH_HEIGHT,
     );
     currentHealthRect = Rect.fromLTWH(
-      -HEALTH_WIDTH / 2 - (12 * game.size.width / game.size.height),
-      -HEALTH_HEIGHT / 2,
+      -HEALTH_WIDTH / 2,
+      -HEALTH_HEIGHT / 2 - (12 * game.size.height / game.size.width),
       HEALTH_WIDTH,
       HEALTH_HEIGHT,
     );
@@ -34,10 +34,10 @@ class Health extends Component {
     final healthPercentage = game.player.currentHealth / game.player.maxHealth;
 
     currentHealthRect = Rect.fromLTWH(
-      -HEALTH_WIDTH / 2 - (12 * game.size.width / game.size.height),
-      -HEALTH_HEIGHT / 2 + (HEALTH_HEIGHT - healthPercentage * HEALTH_HEIGHT),
-      HEALTH_WIDTH,
-      healthPercentage * HEALTH_HEIGHT,
+      -HEALTH_WIDTH / 2,
+      -HEALTH_HEIGHT / 2 - (12 * game.size.height / game.size.width),
+      HEALTH_WIDTH * healthPercentage,
+      HEALTH_HEIGHT,
     );
   }
 

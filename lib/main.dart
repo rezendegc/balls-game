@@ -11,7 +11,7 @@ void main() {
 
   Util flameUtil = Util();
   flameUtil.fullScreen();
-  flameUtil.setOrientation(DeviceOrientation.portraitDown);
+  flameUtil.setOrientation(DeviceOrientation.landscapeLeft);
 }
 
 class MyApp extends StatelessWidget {

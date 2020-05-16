@@ -15,10 +15,10 @@ class Lava extends Component {
   Rect rect;
 
   Lava(this.game, Offset offset) {
-    Vector2 position = Vector2(offset.dx + (16 * game.size.width / game.size.height), offset.dy);
+    Vector2 position = Vector2(offset.dx, offset.dy + (16 * game.size.height / game.size.width));
 
     PolygonShape shape = PolygonShape();
-    shape.setAsBoxXY(1.5, 64);
+    shape.setAsBoxXY(64, 1.5);
     
     rect = Rect.fromPoints(Offset(shape.vertices[0].x, shape.vertices[0].y), Offset(shape.vertices[2].x, shape.vertices[2].y));
 
