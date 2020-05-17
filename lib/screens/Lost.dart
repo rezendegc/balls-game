@@ -8,7 +8,7 @@ class LostScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: FlatButton(
-          onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
+          onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false),
           child: Text("Restart"),
         ),
       ),
