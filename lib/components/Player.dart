@@ -32,6 +32,8 @@ class Player extends Component with ContactListener {
   Offset pointPosition = Offset.zero;
   bool canJump = true;
 
+  List<Offset> points;
+
   int priority() => 10;
 
   Player(this.game, Offset offset) {
@@ -66,19 +68,34 @@ class Player extends Component with ContactListener {
     ff.userData = 'player';
 
     game.world.setContactListener(this);
+
+    points = List.filled(50, offset, growable: true);
   }
 
   void render(Canvas c) {
     double speed = body.linearVelocity.x.abs() + body.linearVelocity.y.abs();
     speed = speed < MAX_SPEED ? speed : MAX_SPEED;
 
+    final paint2 = Paint()
+      ..color = Colors.green
+      ..strokeWidth = .15
+      ..strokeCap = StrokeCap.round
+      ..shader = ui.Gradient.linear(
+        points.last,
+        points.first,
+        [Colors.white, Colors.transparent],
+      );
+    c.drawPoints(ui.PointMode.polygon, points, paint2);
+
     c.save();
     c.translate(body.position.x, body.position.y);
     if (drawLine) {
-      linePaint.shader = ui.Gradient.linear(Offset(0,0), pointPosition, [Colors.white, Colors.transparent]);
+      linePaint.shader = ui.Gradient.linear(
+          Offset(0, 0), pointPosition, [Colors.white, Colors.transparent]);
       c.drawLine(Offset.zero, pointPosition, linePaint);
 
-      c.rotate(atan2(pointPosition.dy, pointPosition.dx) + pi/2);
+      c.rotate(atan2(pointPosition.dy, pointPosition.dx) + pi / 2);
+
       c.scale(1, .8);
     } else if (speed > 1) {
       c.rotate(atan2(body.linearVelocity.y, body.linearVelocity.x));
@@ -86,29 +103,30 @@ class Player extends Component with ContactListener {
     }
 
     c.drawCircle(Offset.zero, SIZE, paint);
+
     c.restore();
   }
 
   void update(double dt) {
-    if (!drawLine) {
-      currentHealth -= dt * 3;
-    } else {
-      currentHealth -= dt * 50;
-    }
-    if (currentHealth < 0) { // loses
+    points.add(Offset(body.position.x, body.position.y));
+    points.removeAt(0);
+    // if (!drawLine) {
+    //   currentHealth -= dt * 3;
+    // } else {
+    //   currentHealth -= dt * 50;
+    // }
+    if (currentHealth < 0) {
+      // loses
       currentHealth = 0;
       game.loseGame();
-    }
-
-    if (body.linearVelocity.x.abs() > 0 || body.linearVelocity.y.abs() > 0) {
-      _spawnParticlesTrail();
     }
   }
 
   void applyDragForce() {
     final force = Vector2(pointPosition.dx, pointPosition.dy);
     body.linearVelocity *= 0.3; // deaccelerate body before apply force
-    body.applyLinearImpulse(force, Vector2(body.position.x, body.position.y), true);
+    body.applyLinearImpulse(
+        force, Vector2(body.position.x, body.position.y), true);
 
     pointPosition = Offset.zero;
     canJump = false;
@@ -122,8 +140,10 @@ class Player extends Component with ContactListener {
 
     final force = Vector2(0, -8 + .15 * body.linearVelocity.y);
     body.linearVelocity.y = 0; // deaccelerate body before apply force
-    body.linearVelocity.x *= deacelleration; // deaccelerate body before apply force
-    body.applyLinearImpulse(force, Vector2(body.position.x, body.position.y), true);
+    body.linearVelocity.x *=
+        deacelleration; // deaccelerate body before apply force
+    body.applyLinearImpulse(
+        force, Vector2(body.position.x, body.position.y), true);
   }
 
   void applyRandomForce() {
@@ -132,9 +152,11 @@ class Player extends Component with ContactListener {
     final invertXforce = rnd.nextBool();
     final invertYforce = rnd.nextBool();
 
-    final force = Vector2(invertXforce ? -xForce : xForce, invertYforce ? -yForce : yForce);
+    final force = Vector2(
+        invertXforce ? -xForce : xForce, invertYforce ? -yForce : yForce);
     body.linearVelocity = Vector2.zero(); // stops body before apply force
-    body.applyLinearImpulse(force, Vector2(body.position.x, body.position.y), true);
+    body.applyLinearImpulse(
+        force, Vector2(body.position.x, body.position.y), true);
   }
 
   void resetJump() {
@@ -146,92 +168,76 @@ class Player extends Component with ContactListener {
     if (currentHealth > maxHealth) currentHealth = maxHealth;
   }
 
-  void _spawnParticlesTrail() {
-    final position = Offset(body.position.x, body.position.y);
-
-    final computedParticle = ComputedParticle(
-      lifespan: 1.0,
-      renderer: (canvas, particle) {
-        final progress = particle.progress > 1 ? 0 : (1 - particle.progress);
-        return canvas.drawRect(
-          Rect.fromCenter(center: position, width: .2 * progress, height: .2 * progress),
-          Paint()..color = Colors.white,
-        );
-      }
-    );
-
-    game.add(computedParticle.asComponent());
-  }
-
   void _spawnHitGroundParticles() {
     final position = Offset(body.position.x, body.position.y);
 
-    final computedParticle = ComputedParticle(
-      renderer: (canvas, particle) {
-        return canvas.drawRect(
-          Rect.fromCenter(center: Offset.zero, width: .2, height: .2),
-          Paint()..color = Colors.white.withOpacity((1 - particle.progress).abs()),
-        );
-      }
-    );
+    final computedParticle = ComputedParticle(renderer: (canvas, particle) {
+      return canvas.drawRect(
+        Rect.fromCenter(center: Offset.zero, width: .2, height: .2),
+        Paint()
+          ..color = Colors.white.withOpacity((1 - particle.progress).abs()),
+      );
+    });
 
     final particles = [
       MovingParticle(
-        from: position,
-        to: position + Offset((.5 + rnd.nextDouble() * 5),(.5 + rnd.nextDouble() * 5)),
-        lifespan: 3.0,
-        curve: Curves.decelerate,
-        child: computedParticle
-      ),
+          from: position,
+          to: position +
+              Offset((.5 + rnd.nextDouble() * 5), (.5 + rnd.nextDouble() * 5)),
+          lifespan: 3.0,
+          curve: Curves.decelerate,
+          child: computedParticle),
       MovingParticle(
-        from: position,
-        to: position + Offset((.5 + rnd.nextDouble() * 5),(.5 + rnd.nextDouble() * 5)),
-        lifespan: 3.0,
-        curve: Curves.decelerate,
-        child: computedParticle
-      ),
+          from: position,
+          to: position +
+              Offset((.5 + rnd.nextDouble() * 5), (.5 + rnd.nextDouble() * 5)),
+          lifespan: 3.0,
+          curve: Curves.decelerate,
+          child: computedParticle),
       MovingParticle(
-        from: position,
-        to: position + Offset(-(.5 + rnd.nextDouble() * 5),-(.5 + rnd.nextDouble() * 5)),
-        lifespan: 3.0,
-        curve: Curves.decelerate,
-        child: computedParticle
-      ),
+          from: position,
+          to: position +
+              Offset(
+                  -(.5 + rnd.nextDouble() * 5), -(.5 + rnd.nextDouble() * 5)),
+          lifespan: 3.0,
+          curve: Curves.decelerate,
+          child: computedParticle),
       MovingParticle(
-        from: position,
-        to: position + Offset(-(.5 + rnd.nextDouble() * 5),-(.5 + rnd.nextDouble() * 5)),
-        lifespan: 3.0,
-        curve: Curves.decelerate,
-        child: computedParticle
-      ),
+          from: position,
+          to: position +
+              Offset(
+                  -(.5 + rnd.nextDouble() * 5), -(.5 + rnd.nextDouble() * 5)),
+          lifespan: 3.0,
+          curve: Curves.decelerate,
+          child: computedParticle),
       MovingParticle(
-        from: position,
-        to: position + Offset(-(.5 + rnd.nextDouble() * 5),(.5 + rnd.nextDouble() * 5)),
-        lifespan: 3.0,
-        curve: Curves.decelerate,
-        child: computedParticle
-      ),
+          from: position,
+          to: position +
+              Offset(-(.5 + rnd.nextDouble() * 5), (.5 + rnd.nextDouble() * 5)),
+          lifespan: 3.0,
+          curve: Curves.decelerate,
+          child: computedParticle),
       MovingParticle(
-        from: position,
-        to: position + Offset(-(.5 + rnd.nextDouble() * 5),(.5 + rnd.nextDouble() * 5)),
-        lifespan: 3.0,
-        curve: Curves.decelerate,
-        child: computedParticle
-      ),
+          from: position,
+          to: position +
+              Offset(-(.5 + rnd.nextDouble() * 5), (.5 + rnd.nextDouble() * 5)),
+          lifespan: 3.0,
+          curve: Curves.decelerate,
+          child: computedParticle),
       MovingParticle(
-        from: position,
-        to: position + Offset((.5 + rnd.nextDouble() * 5),-(.5 + rnd.nextDouble() * 5)),
-        lifespan: 3.0,
-        curve: Curves.decelerate,
-        child: computedParticle
-      ),
+          from: position,
+          to: position +
+              Offset((.5 + rnd.nextDouble() * 5), -(.5 + rnd.nextDouble() * 5)),
+          lifespan: 3.0,
+          curve: Curves.decelerate,
+          child: computedParticle),
       MovingParticle(
-        from: position,
-        to: position + Offset((.5 + rnd.nextDouble() * 3),-(.5 + rnd.nextDouble() * 3)),
-        lifespan: 3.0,
-        curve: Curves.decelerate,
-        child: computedParticle
-      ),
+          from: position,
+          to: position +
+              Offset((.5 + rnd.nextDouble() * 3), -(.5 + rnd.nextDouble() * 3)),
+          lifespan: 3.0,
+          curve: Curves.decelerate,
+          child: computedParticle),
     ];
 
     particles.forEach((particle) => game.add(particle.asComponent()));
@@ -240,44 +246,44 @@ class Player extends Component with ContactListener {
   void _spawnDragForceParticles() {
     final position = Offset(body.position.x, body.position.y);
 
-    final computedParticle = ComputedParticle(
-      renderer: (canvas, particle) {
-        return canvas.drawRect(
-          Rect.fromCenter(center: Offset.zero, width: .3, height: .3),
-          Paint()..color = Colors.white.withOpacity((1 - particle.progress).abs()),
-        );
-      }
-    );
+    final computedParticle = ComputedParticle(renderer: (canvas, particle) {
+      return canvas.drawRect(
+        Rect.fromCenter(center: Offset.zero, width: .3, height: .3),
+        Paint()
+          ..color = Colors.white.withOpacity((1 - particle.progress).abs()),
+      );
+    });
 
     final particles = [
       MovingParticle(
-        from: position,
-        to: position + Offset((.5 + rnd.nextDouble() * 7),(.5 + rnd.nextDouble() * 7)),
-        lifespan: 4.0,
-        curve: Curves.decelerate,
-        child: computedParticle
-      ),
+          from: position,
+          to: position +
+              Offset((.5 + rnd.nextDouble() * 7), (.5 + rnd.nextDouble() * 7)),
+          lifespan: 4.0,
+          curve: Curves.decelerate,
+          child: computedParticle),
       MovingParticle(
-        from: position,
-        to: position + Offset(-(.5 + rnd.nextDouble() * 7),-(.5 + rnd.nextDouble() * 7)),
-        lifespan: 4.0,
-        curve: Curves.decelerate,
-        child: computedParticle
-      ),
+          from: position,
+          to: position +
+              Offset(
+                  -(.5 + rnd.nextDouble() * 7), -(.5 + rnd.nextDouble() * 7)),
+          lifespan: 4.0,
+          curve: Curves.decelerate,
+          child: computedParticle),
       MovingParticle(
-        from: position,
-        to: position + Offset(-(.5 + rnd.nextDouble() * 7),(.5 + rnd.nextDouble() * 7)),
-        lifespan: 4.0,
-        curve: Curves.decelerate,
-        child: computedParticle
-      ),
+          from: position,
+          to: position +
+              Offset(-(.5 + rnd.nextDouble() * 7), (.5 + rnd.nextDouble() * 7)),
+          lifespan: 4.0,
+          curve: Curves.decelerate,
+          child: computedParticle),
       MovingParticle(
-        from: position,
-        to: position + Offset((.5 + rnd.nextDouble() * 7),-(.5 + rnd.nextDouble() * 7)),
-        lifespan: 4.0,
-        curve: Curves.decelerate,
-        child: computedParticle
-      ),
+          from: position,
+          to: position +
+              Offset((.5 + rnd.nextDouble() * 7), -(.5 + rnd.nextDouble() * 7)),
+          lifespan: 4.0,
+          curve: Curves.decelerate,
+          child: computedParticle),
     ];
 
     particles.forEach((particle) => game.add(particle.asComponent()));
@@ -327,6 +333,7 @@ class Player extends Component with ContactListener {
   void beginContact(contact) {
     _solveContact(contact);
   }
+
   void endContact(contact) {}
   void postSolve(contact, impulse) {}
   void preSolve(contact, oldManifold) {}
