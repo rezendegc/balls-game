@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:box2d_flame/box2d.dart' hide Timer;
 import 'package:flame/components/component.dart';
+import 'package:flame/flame.dart';
 import 'package:flame/particles/computed_particle.dart';
 import 'package:flame/particles/moving_particle.dart';
 import 'package:flutter/material.dart';
@@ -110,11 +111,11 @@ class Player extends Component with ContactListener {
   void update(double dt) {
     points.add(Offset(body.position.x, body.position.y));
     points.removeAt(0);
-    // if (!drawLine) {
-    //   currentHealth -= dt * 3;
-    // } else {
-    //   currentHealth -= dt * 50;
-    // }
+    if (!drawLine) {
+      currentHealth -= dt * 3;
+    } else {
+      currentHealth -= dt * 50;
+    }
     if (currentHealth < 0) {
       // loses
       currentHealth = 0;
@@ -130,6 +131,8 @@ class Player extends Component with ContactListener {
 
     pointPosition = Offset.zero;
     canJump = false;
+
+    Flame.audio.play('Jump.wav');
 
     _spawnDragForceParticles();
   }

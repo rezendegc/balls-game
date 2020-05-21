@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:box2d_flame/box2d.dart' hide Timer;
 import 'package:flame/components/component.dart';
+import 'package:flame/flame.dart';
 import 'package:flame/particle.dart';
 import 'package:flame/particles/accelerated_particle.dart';
 import 'package:flame/particles/computed_particle.dart';
@@ -62,6 +63,7 @@ class RedBall extends Component {
   void update(double dt) {}
 
   void markToDestroy() {
+    Flame.audio.play('Explosion.wav');
     _willDestroy = true;
   }
 

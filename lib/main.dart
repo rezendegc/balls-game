@@ -1,3 +1,4 @@
+import 'package:flame/flame.dart';
 import 'package:flame/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,11 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MyApp());
+
+  Flame.audio.loadAll([
+    'Explosion.wav',
+    'Jump.wav',
+  ]);
 
   Util flameUtil = Util();
   flameUtil.fullScreen();
